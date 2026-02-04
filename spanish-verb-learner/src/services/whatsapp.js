@@ -1,16 +1,35 @@
 import twilio from 'twilio';
 
-const client = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+let client = null;
+
+function getClient() {
+  if (client === null) {
+    const sid = process.env.TWILIO_ACCOUNT_SID;
+    const token = process.env.TWILIO_AUTH_TOKEN;
+
+    if (!sid || !token || !sid.startsWith('AC')) {
+      console.warn('⚠️  Twilio not configured - WhatsApp messages will be logged only');
+      client = false; // Mark as checked but unavailable
+      return null;
+    }
+    client = twilio(sid, token);
+  }
+  return client || null;
+}
 
 const fromNumber = process.env.TWILIO_WHATSAPP_NUMBER;
 const toNumber = process.env.USER_PHONE;
 
 export async function sendWhatsAppMessage(message) {
+  const twilioClient = getClient();
+
+  if (!twilioClient) {
+    console.log(`📱 [WhatsApp - Demo Mode] Would send:\n${message}\n`);
+    return { sid: 'demo-mode', demo: true };
+  }
+
   try {
-    const result = await client.messages.create({
+    const result = await twilioClient.messages.create({
       body: message,
       from: fromNumber,
       to: toNumber

@@ -1,11 +1,26 @@
 import sgMail from '@sendgrid/mail';
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+let configured = false;
+const apiKey = process.env.SENDGRID_API_KEY;
+
+if (apiKey && apiKey.startsWith('SG.')) {
+  sgMail.setApiKey(apiKey);
+  configured = true;
+} else {
+  console.warn('⚠️  SendGrid not configured - emails will be logged only');
+}
 
 const fromEmail = process.env.SENDGRID_FROM_EMAIL;
 const toEmail = process.env.USER_EMAIL;
 
 export async function sendEmail(subject, htmlContent, textContent) {
+  if (!configured) {
+    console.log(`📧 [Email - Demo Mode] Would send to ${toEmail}:`);
+    console.log(`   Subject: ${subject}`);
+    console.log(`   (HTML content omitted)\n`);
+    return { demo: true };
+  }
+
   try {
     const result = await sgMail.send({
       to: toEmail,
