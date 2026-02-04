@@ -1,0 +1,161 @@
+<div class="header">
+  <h2>Settings</h2>
+</div>
+
+<!-- Schedule Settings -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Schedule</div>
+  </div>
+
+  <div style="display: grid; gap: 24px; max-width: 400px;">
+    <div>
+      <label style="display: block; font-weight: 500; margin-bottom: 8px;">Daily Challenge Time (Hour)</label>
+      <select id="daily_hour" style="width: 100%; padding: 10px; border: 1px solid var(--gray-300); border-radius: 8px;">
+        {{#each (range 0 24)}}
+          <option value="{{this}}" {{#if (eq this ../settings.daily_hour)}}selected{{/if}}>
+            {{this}}:00 ({{#if (lt this 12)}}{{this}} AM{{else}}{{subtract this 12}} PM{{/if}})
+          </option>
+        {{/each}}
+      </select>
+      <small style="color: var(--gray-500);">Costa Rica time (UTC-6)</small>
+    </div>
+
+    <div>
+      <label style="display: block; font-weight: 500; margin-bottom: 8px;">Learning Status</label>
+      <button
+        class="btn {{#if (eq settings.is_active 'true')}}btn-success{{else}}btn-secondary{{/if}}"
+        onclick="toggleActive()"
+        id="toggleBtn"
+      >
+        {{#if (eq settings.is_active 'true')}}
+          ✓ Active - Daily challenges enabled
+        {{else}}
+          ⏸ Paused - No challenges will be sent
+        {{/if}}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Integration Settings -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Integration Status</div>
+  </div>
+
+  <div style="display: grid; gap: 16px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--gray-50); border-radius: 8px;">
+      <div>
+        <strong>WhatsApp (Twilio)</strong>
+        <p style="color: var(--gray-500); font-size: 14px; margin-top: 4px;">
+          Sends daily challenges and receives your answers
+        </p>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="testWhatsApp()">Test Connection</button>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--gray-50); border-radius: 8px;">
+      <div>
+        <strong>Email (SendGrid)</strong>
+        <p style="color: var(--gray-500); font-size: 14px; margin-top: 4px;">
+          Sends weekly verb grids and progress reports
+        </p>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="testEmail()">Test Connection</button>
+    </div>
+  </div>
+</div>
+
+<!-- User Info -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Your Information</div>
+  </div>
+
+  <div style="display: grid; gap: 16px; max-width: 400px;">
+    <div>
+      <label style="display: block; font-weight: 500; margin-bottom: 8px;">Phone Number</label>
+      <input
+        type="text"
+        value="whatsapp:+12067130397"
+        disabled
+        style="width: 100%; padding: 10px; border: 1px solid var(--gray-300); border-radius: 8px; background: var(--gray-50);"
+      >
+      <small style="color: var(--gray-500);">Configured in .env file</small>
+    </div>
+
+    <div>
+      <label style="display: block; font-weight: 500; margin-bottom: 8px;">Email</label>
+      <input
+        type="text"
+        value="philip.r.deng@gmail.com"
+        disabled
+        style="width: 100%; padding: 10px; border: 1px solid var(--gray-300); border-radius: 8px; background: var(--gray-50);"
+      >
+      <small style="color: var(--gray-500);">Configured in .env file</small>
+    </div>
+
+    <div>
+      <label style="display: block; font-weight: 500; margin-bottom: 8px;">Timezone</label>
+      <input
+        type="text"
+        value="America/Costa_Rica (UTC-6)"
+        disabled
+        style="width: 100%; padding: 10px; border: 1px solid var(--gray-300); border-radius: 8px; background: var(--gray-50);"
+      >
+    </div>
+  </div>
+</div>
+
+<!-- Danger Zone -->
+<div class="card" style="border: 1px solid var(--danger);">
+  <div class="card-header">
+    <div class="card-title" style="color: var(--danger);">Danger Zone</div>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <strong>Reset All Progress</strong>
+      <p style="color: var(--gray-500); font-size: 14px; margin-top: 4px;">
+        This will delete all your learning history and start fresh.
+      </p>
+    </div>
+    <button class="btn btn-danger btn-sm" onclick="confirmReset()">Reset Progress</button>
+  </div>
+</div>
+
+<script>
+  async function toggleActive() {
+    await apiPost('toggle-active');
+    location.reload();
+  }
+
+  async function testWhatsApp() {
+    await apiPost('test/whatsapp');
+  }
+
+  async function testEmail() {
+    await apiPost('test/email');
+  }
+
+  function confirmReset() {
+    if (confirm('Are you sure? This will delete ALL your progress and cannot be undone!')) {
+      // Would need an API endpoint for this
+      showToast('Reset functionality not implemented yet');
+    }
+  }
+
+  // Update daily hour setting
+  document.getElementById('daily_hour')?.addEventListener('change', async (e) => {
+    const res = await fetch('/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: 'daily_hour', value: e.target.value })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('Schedule updated!');
+    }
+  });
+</script>

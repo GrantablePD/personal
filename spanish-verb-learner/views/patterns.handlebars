@@ -1,0 +1,144 @@
+<div class="header">
+  <h2>Pattern Analysis</h2>
+</div>
+
+<div class="alert alert-info">
+  This page shows your performance patterns across different tenses and pronouns.
+  Green = strong, Yellow = needs practice, Red = focus area.
+</div>
+
+<!-- Heat Map -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Performance Heat Map</div>
+  </div>
+  <div class="conj-grid">
+    <table>
+      <thead>
+        <tr>
+          <th>Person</th>
+          {{#each tenses}}
+            <th>{{this}}</th>
+          {{/each}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each persons}}
+          <tr>
+            <td><strong>{{this}}</strong></td>
+            {{#with (lookup ../matrix this)}}
+              <td class="heat-cell heat-{{heatLevel presente.rate}}">
+                {{#if presente.attempts}}
+                  {{formatPercent presente.rate}}%
+                  <br><small>({{presente.correct}}/{{presente.attempts}})</small>
+                {{else}}
+                  -
+                {{/if}}
+              </td>
+              <td class="heat-cell heat-{{heatLevel preterito.rate}}">
+                {{#if preterito.attempts}}
+                  {{formatPercent preterito.rate}}%
+                  <br><small>({{preterito.correct}}/{{preterito.attempts}})</small>
+                {{else}}
+                  -
+                {{/if}}
+              </td>
+              <td class="heat-cell heat-{{heatLevel futuro.rate}}">
+                {{#if futuro.attempts}}
+                  {{formatPercent futuro.rate}}%
+                  <br><small>({{futuro.correct}}/{{futuro.attempts}})</small>
+                {{else}}
+                  -
+                {{/if}}
+              </td>
+              <td class="heat-cell heat-{{heatLevel imperfecto.rate}}">
+                {{#if imperfecto.attempts}}
+                  {{formatPercent imperfecto.rate}}%
+                  <br><small>({{imperfecto.correct}}/{{imperfecto.attempts}})</small>
+                {{else}}
+                  -
+                {{/if}}
+              </td>
+            {{/with}}
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+  <!-- Areas to Focus -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">🎯 Areas to Focus</div>
+    </div>
+    {{#if weakest.length}}
+      <table>
+        <thead>
+          <tr>
+            <th>Combination</th>
+            <th>Accuracy</th>
+            <th>Attempts</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each weakest}}
+            <tr>
+              <td><strong>{{tense}}</strong> + {{person}}</td>
+              <td>
+                <span class="badge badge-danger">{{formatPercent success_rate}}%</span>
+              </td>
+              <td>{{correct_attempts}}/{{total_attempts}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    {{else}}
+      <p style="color: var(--gray-500);">Not enough data yet. Keep practicing!</p>
+    {{/if}}
+  </div>
+
+  <!-- Strengths -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">💪 Your Strengths</div>
+    </div>
+    {{#if strongest.length}}
+      <table>
+        <thead>
+          <tr>
+            <th>Combination</th>
+            <th>Accuracy</th>
+            <th>Attempts</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each strongest}}
+            <tr>
+              <td><strong>{{tense}}</strong> + {{person}}</td>
+              <td>
+                <span class="badge badge-success">{{formatPercent success_rate}}%</span>
+              </td>
+              <td>{{correct_attempts}}/{{total_attempts}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    {{else}}
+      <p style="color: var(--gray-500);">Complete more challenges to see your strengths!</p>
+    {{/if}}
+  </div>
+</div>
+
+<script>
+  // Helper function for heat level (simulated - would need to be in Handlebars helpers)
+  function getHeatLevel(rate) {
+    if (rate === null) return 0;
+    if (rate < 0.4) return 1;
+    if (rate < 0.6) return 2;
+    if (rate < 0.7) return 3;
+    if (rate < 0.85) return 4;
+    return 5;
+  }
+</script>

@@ -1,0 +1,86 @@
+<div class="header">
+  <h2>Learning History</h2>
+</div>
+
+<!-- Overall Progress -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Overall Progress</div>
+  </div>
+  <div style="margin-bottom: 16px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+      <span>Verbs Completed</span>
+      <span><strong>{{stats.weeksCompleted}}</strong> / 100</span>
+    </div>
+    <div class="progress-bar" style="height: 24px;">
+      <div class="progress-fill" style="width: {{stats.weeksCompleted}}%;"></div>
+    </div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: center;">
+    <div>
+      <div style="font-size: 24px; font-weight: bold; color: var(--primary);">{{stats.totalResponses}}</div>
+      <div style="color: var(--gray-500); font-size: 14px;">Total Responses</div>
+    </div>
+    <div>
+      <div style="font-size: 24px; font-weight: bold; color: var(--success);">{{formatPercent stats.accuracy}}%</div>
+      <div style="color: var(--gray-500); font-size: 14px;">Overall Accuracy</div>
+    </div>
+    <div>
+      <div style="font-size: 24px; font-weight: bold; color: var(--warning);">{{stats.currentStreak}}</div>
+      <div style="color: var(--gray-500); font-size: 14px;">Current Streak</div>
+    </div>
+  </div>
+</div>
+
+<!-- Week History -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Week History</div>
+  </div>
+  {{#if history.length}}
+    <table>
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Verb</th>
+          <th>Started</th>
+          <th>Completed</th>
+          <th>Score</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each history}}
+          <tr>
+            <td><strong>Week {{week_number}}</strong></td>
+            <td>
+              <a href="/verbs/{{verb_id}}">{{spanish}}</a>
+              <br><small style="color: var(--gray-500);">{{english}}</small>
+            </td>
+            <td>{{formatDate started_at}}</td>
+            <td>{{#if completed_at}}{{formatDate completed_at}}{{else}}-{{/if}}</td>
+            <td>
+              {{#if total_count}}
+                <strong>{{correct_count}}/{{total_count}}</strong>
+                ({{formatPercent (divide correct_count total_count)}}%)
+              {{else}}
+                -
+              {{/if}}
+            </td>
+            <td>
+              {{#if completed_at}}
+                <span class="badge badge-success">Complete</span>
+              {{else}}
+                <span class="badge badge-warning">In Progress</span>
+              {{/if}}
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{else}}
+    <p style="color: var(--gray-500); text-align: center; padding: 32px;">
+      No history yet. Start learning to see your progress here!
+    </p>
+  {{/if}}
+</div>

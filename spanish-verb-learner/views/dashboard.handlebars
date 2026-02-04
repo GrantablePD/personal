@@ -1,0 +1,197 @@
+<div class="header">
+  <h2>Dashboard</h2>
+  <div>
+    {{#if isActive}}
+      <span class="badge badge-success">Active</span>
+    {{else}}
+      <span class="badge badge-warning">Paused</span>
+    {{/if}}
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-value">{{stats.weeksCompleted}}</div>
+    <div class="stat-label">Weeks Completed</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{formatPercent stats.accuracy}}%</div>
+    <div class="stat-label">Overall Accuracy</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{stats.totalResponses}}</div>
+    <div class="stat-label">Total Responses</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{stats.currentStreak}}</div>
+    <div class="stat-label">Current Streak</div>
+  </div>
+</div>
+
+{{#if progress}}
+  <!-- Current Week -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Week {{progress.week_number}} - Current Verb</div>
+      <span class="badge badge-info">Day {{progress.current_day}}/7</span>
+    </div>
+
+    <div style="display: flex; gap: 32px; flex-wrap: wrap;">
+      <div>
+        <h3 style="font-size: 32px; margin-bottom: 4px;">{{verb.spanish}}</h3>
+        <p style="color: var(--gray-500);">{{verb.english}}</p>
+        <p style="margin-top: 8px;">
+          {{#if verb.irregular}}
+            <span class="badge badge-warning">Irregular</span>
+          {{else}}
+            <span class="badge badge-success">Regular</span>
+          {{/if}}
+          <span class="badge badge-info">-{{verb.verb_type}}</span>
+        </p>
+      </div>
+
+      <div style="flex: 1; min-width: 300px;">
+        <div style="margin-bottom: 8px; display: flex; justify-content: space-between;">
+          <span>Week Progress</span>
+          <span>{{weekScore.correct}}/{{weekScore.total}} correct</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: {{formatPercent (divide progress.current_day 7)}}%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conjugation Grid -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Conjugation Grid</div>
+    </div>
+    <div class="conj-grid">
+      <table>
+        <thead>
+          <tr>
+            <th>Person</th>
+            <th>Presente</th>
+            <th>Pretérito</th>
+            <th>Futuro</th>
+            <th>Imperfecto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Yo</strong></td>
+            <td>{{conjugationGrid.yo.presente}}</td>
+            <td>{{conjugationGrid.yo.preterito}}</td>
+            <td>{{conjugationGrid.yo.futuro}}</td>
+            <td>{{conjugationGrid.yo.imperfecto}}</td>
+          </tr>
+          <tr>
+            <td><strong>Tú</strong></td>
+            <td>{{conjugationGrid.tu.presente}}</td>
+            <td>{{conjugationGrid.tu.preterito}}</td>
+            <td>{{conjugationGrid.tu.futuro}}</td>
+            <td>{{conjugationGrid.tu.imperfecto}}</td>
+          </tr>
+          <tr>
+            <td><strong>Él/Ella</strong></td>
+            <td>{{conjugationGrid.el.presente}}</td>
+            <td>{{conjugationGrid.el.preterito}}</td>
+            <td>{{conjugationGrid.el.futuro}}</td>
+            <td>{{conjugationGrid.el.imperfecto}}</td>
+          </tr>
+          <tr>
+            <td><strong>Nosotros</strong></td>
+            <td>{{conjugationGrid.nosotros.presente}}</td>
+            <td>{{conjugationGrid.nosotros.preterito}}</td>
+            <td>{{conjugationGrid.nosotros.futuro}}</td>
+            <td>{{conjugationGrid.nosotros.imperfecto}}</td>
+          </tr>
+          <tr>
+            <td><strong>Ellos</strong></td>
+            <td>{{conjugationGrid.ellos.presente}}</td>
+            <td>{{conjugationGrid.ellos.preterito}}</td>
+            <td>{{conjugationGrid.ellos.futuro}}</td>
+            <td>{{conjugationGrid.ellos.imperfecto}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- This Week's Responses -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">This Week's Responses</div>
+    </div>
+
+    {{#if responses.length}}
+      <div class="timeline">
+        {{#each responses}}
+          <div class="timeline-item">
+            <div class="timeline-dot {{#if is_correct}}correct{{else}}incorrect{{/if}}">
+              {{#if is_correct}}✓{{else}}✗{{/if}}
+            </div>
+            <div>
+              <strong>Day {{day_number}}</strong>
+              <p style="color: var(--gray-500); margin: 4px 0;">{{english_sentence}}</p>
+              <p>Your answer: <strong>{{user_answer}}</strong></p>
+              {{#unless is_correct}}
+                <p style="color: var(--danger);">Correct: {{spanish_answer}}</p>
+              {{/unless}}
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    {{else}}
+      <p style="color: var(--gray-500);">No responses yet this week.</p>
+    {{/if}}
+  </div>
+
+{{else}}
+  <!-- No active week - Start prompt -->
+  <div class="card" style="text-align: center; padding: 48px;">
+    <h3 style="font-size: 24px; margin-bottom: 16px;">Ready to Start Learning?</h3>
+    <p style="color: var(--gray-500); margin-bottom: 24px;">
+      Click below to begin your Spanish verb learning journey!<br>
+      You'll receive a welcome message and your first verb.
+    </p>
+    <button class="btn btn-primary btn-lg" onclick="startLearning()">
+      🚀 Start Learning
+    </button>
+  </div>
+{{/if}}
+
+<!-- Quick Actions -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Quick Actions</div>
+  </div>
+  <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+    <button class="btn btn-secondary" onclick="apiPost('trigger/challenge').then(() => location.reload())">
+      📱 Send Today's Challenge
+    </button>
+    <button class="btn btn-secondary" onclick="apiPost('trigger/new-week').then(() => location.reload())">
+      📚 Start New Week
+    </button>
+    <button class="btn btn-secondary" onclick="apiPost('trigger/complete-week').then(() => location.reload())">
+      ✅ Complete Current Week
+    </button>
+    <button class="btn btn-secondary" onclick="apiPost('test/whatsapp')">
+      🧪 Test WhatsApp
+    </button>
+    <button class="btn btn-secondary" onclick="apiPost('test/email')">
+      📧 Test Email
+    </button>
+  </div>
+</div>
+
+<script>
+  async function startLearning() {
+    const data = await apiPost('start');
+    if (data.success) {
+      setTimeout(() => location.reload(), 1500);
+    }
+  }
+</script>

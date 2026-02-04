@@ -1,0 +1,99 @@
+<div class="header">
+  <div>
+    <a href="/verbs" style="color: var(--gray-500); text-decoration: none;">← Back to Library</a>
+    <h2 style="margin-top: 8px;">{{verb.spanish}} <span style="font-weight: normal; color: var(--gray-500);">{{verb.english}}</span></h2>
+  </div>
+  <div>
+    {{#if verb.irregular}}
+      <span class="badge badge-warning">Irregular</span>
+    {{else}}
+      <span class="badge badge-success">Regular</span>
+    {{/if}}
+    <span class="badge badge-info">-{{verb.verb_type}}</span>
+  </div>
+</div>
+
+<!-- Conjugation Grid -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Conjugation Grid</div>
+  </div>
+  <div class="conj-grid">
+    <table>
+      <thead>
+        <tr>
+          <th>Person</th>
+          <th>Presente</th>
+          <th>Pretérito</th>
+          <th>Futuro</th>
+          <th>Imperfecto</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Yo</strong> (I)</td>
+          <td>{{conjugationGrid.yo.presente}}</td>
+          <td>{{conjugationGrid.yo.preterito}}</td>
+          <td>{{conjugationGrid.yo.futuro}}</td>
+          <td>{{conjugationGrid.yo.imperfecto}}</td>
+        </tr>
+        <tr>
+          <td><strong>Tú</strong> (you)</td>
+          <td>{{conjugationGrid.tu.presente}}</td>
+          <td>{{conjugationGrid.tu.preterito}}</td>
+          <td>{{conjugationGrid.tu.futuro}}</td>
+          <td>{{conjugationGrid.tu.imperfecto}}</td>
+        </tr>
+        <tr>
+          <td><strong>Él/Ella</strong> (he/she)</td>
+          <td>{{conjugationGrid.el.presente}}</td>
+          <td>{{conjugationGrid.el.preterito}}</td>
+          <td>{{conjugationGrid.el.futuro}}</td>
+          <td>{{conjugationGrid.el.imperfecto}}</td>
+        </tr>
+        <tr>
+          <td><strong>Nosotros</strong> (we)</td>
+          <td>{{conjugationGrid.nosotros.presente}}</td>
+          <td>{{conjugationGrid.nosotros.preterito}}</td>
+          <td>{{conjugationGrid.nosotros.futuro}}</td>
+          <td>{{conjugationGrid.nosotros.imperfecto}}</td>
+        </tr>
+        <tr>
+          <td><strong>Ellos</strong> (they)</td>
+          <td>{{conjugationGrid.ellos.presente}}</td>
+          <td>{{conjugationGrid.ellos.preterito}}</td>
+          <td>{{conjugationGrid.ellos.futuro}}</td>
+          <td>{{conjugationGrid.ellos.imperfecto}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Practice Sentences -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Practice Sentences</div>
+    <span class="badge badge-info">{{challenges.length}} challenges</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Tense</th>
+        <th>Person</th>
+        <th>English</th>
+        <th>Spanish</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each challenges}}
+        <tr>
+          <td><span class="badge badge-info">{{tense}}</span></td>
+          <td>{{person}}</td>
+          <td>{{english_sentence}}</td>
+          <td><strong>{{spanish_answer}}</strong></td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

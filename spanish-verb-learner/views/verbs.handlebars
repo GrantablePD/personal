@@ -1,0 +1,52 @@
+<div class="header">
+  <h2>Verb Library</h2>
+  <span class="badge badge-info">{{verbs.length}} verbs</span>
+</div>
+
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Spanish</th>
+        <th>English</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Accuracy</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each verbs}}
+        <tr>
+          <td>{{frequency_rank}}</td>
+          <td><strong>{{spanish}}</strong></td>
+          <td>{{english}}</td>
+          <td>
+            <span class="badge badge-info">-{{verb_type}}</span>
+            {{#if irregular}}
+              <span class="badge badge-warning">irregular</span>
+            {{/if}}
+          </td>
+          <td>
+            {{#if studied}}
+              <span class="badge badge-success">Studied</span>
+            {{else}}
+              <span class="badge badge-secondary">Not started</span>
+            {{/if}}
+          </td>
+          <td>
+            {{#if accuracy}}
+              {{formatPercent accuracy}}%
+            {{else}}
+              -
+            {{/if}}
+          </td>
+          <td>
+            <a href="/verbs/{{id}}" class="btn btn-sm btn-secondary">View</a>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
